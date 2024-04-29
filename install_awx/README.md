@@ -15,6 +15,12 @@ Automatización para la instalación del operador de AWX.
 ````bash
 $ ansible-playbook -i inventory main.yml -e awx_version="2.15.0"
 ````
+>Compruebe la version en:
+
+[text](https://github.com/ansible/awx-operator/releases)
+
+
+---
 
 >NOTA: recuerde cambiar la contraseña en su primer inicio.
 
