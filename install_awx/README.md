@@ -17,4 +17,10 @@ $ ansible-playbook -i inventory main.yml -e awx_version="2.15.0"
 ````
 
 >NOTA: recuerde cambiar la contraseña en su primer inicio.
-"msg": "You password 8G07i1oZelWQsesme0RN7B5guJgcQGj6 "
+
+````bash
+TASK [debug] *********************************************************************************************************************************************************
+ok: [debian1] => {
+    "msg": "You password 8G07i1oZelWQsesme0RN7B5guJgcQGj6 "
+}
+````
