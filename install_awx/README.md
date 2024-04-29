@@ -1,6 +1,8 @@
 # Playbook AWX_install.
 
 Automatización para la instalación del operador de AWX.
+Ansible AWX sobre un entorno de Kubernetes, rancher ks3
+
 ### Requerimientos.
 
 - ansible-core
