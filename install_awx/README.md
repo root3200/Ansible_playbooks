@@ -17,7 +17,7 @@ $ ansible-playbook -i inventory main.yml -e awx_version="2.15.0"
 ````
 >Compruebe la version en:
 
-[awx_operator/rekeases](https://github.com/ansible/awx-operator/releases)
+[awx_operator/releases](https://github.com/ansible/awx-operator/releases)
 
 
 ---
