@@ -5,7 +5,7 @@ Automatización para la instalación del operador de AWX.
 
 - ansible-core
 
-### Tested on:
+### Probado en:
 
 - Debian
 - Ubuntu
