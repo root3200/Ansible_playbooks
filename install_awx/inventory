@@ -1,0 +1,8 @@
+[example]
+example_1 ansible_host=<YOU IP>
+
+[example:vars]
+ansible_user=<YOU USER>
+ansible_password=<YOU PASSWORD>
+ansible_become_method=sudo
+ansible_become_password=<SUDO PASSWORD>

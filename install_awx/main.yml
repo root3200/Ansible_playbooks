@@ -1,0 +1,77 @@
+---
+- name: awx_install
+  hosts: all
+  become: true
+  gather_facts: false
+  vars:
+    awx_version: "{{ version }}"
+  tasks:
+    
+    - name: install packages
+      ansible.builtin.apt:
+        name:
+          - curl
+          - git
+          - python3
+          - python3-pip
+        state: present
+
+    - name: Install rancher-ks3
+      ansible.builtin.shell: |
+        curl -sfL https://get.k3s.io | sh -
+        curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
+      args:
+        chdir: "/usr/local/bin/"
+        executable: /bin/bash
+    
+    - name: kustomization.yaml
+      ansible.builtin.template:
+        src: "files/{{ item }}"
+        dest: "/tmp/{{ item | replace('.yaml.j2','.yaml') }}"
+      loop:
+        - kustomization.yaml.j2
+        - kustomization_1.yaml.j2
+        - awx.yaml.j2
+    
+    - name: build 
+      ansible.builtin.shell: |
+        kustomize build . | kubectl apply -f -
+        rm -rf kustomization.yaml
+        mv kustomization_1.yaml kustomization.yaml
+        kustomize build . | kubectl apply -f -
+        kubectl logs -f deployments/awx-operator-controller-manager -c awx-manager --namespace awx
+      args:
+        chdir: "/tmp/"
+        executable: /bin/bash
+      async: 300
+      poll: 0
+      register: log
+    
+    - name: WAIT FOR AWX DEPLOYD
+      ansible.builtin.pause:
+        minutes: 5
+     
+    - name: get password admin
+      ansible.builtin.shell:
+        kubectl get secret awx-admin-password -o jsonpath="{.data.password}" --namespace awx | base64 --decode
+      args:
+        executable: /bin/bash
+      register: admin_p
+
+    - debug:
+        msg: "You password {{ admin_p.stdout }} "
+      
+    - name: 
+      ansible.builtin.setup:
+
+    - name: awx test
+      awx.awx.tower_ad_hoc_command:
+        tower_host: "http://{{ ansible_facts['default_ipv4']['address'] }}:30080"
+        tower_username: "admin"
+        tower_password: "{{ admin_p.stdout }}"
+        tower_verify_ssl: false
+        inventory: Demo Inventory
+        credential: Demo Credential
+        module_name: command
+        module_args: echo I <3 Ansible
+        wait: true
